@@ -5,27 +5,27 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
+///<summary> This class extends from Mirror's network manager. 
+///<para> Requires: NetworkRoomPlayerLobby script
+///<para> Requires: NetworkGamePlayerLobby script           
+///</summary>
 public class NetworkManagerLobby : NetworkManager
 {
-    ///<summary> This class extends from Mirror's network manager. 
-    ///<para> Requires: NetworkRoomPlayerLobby script
-    ///<para> Requires: NetworkGamePlayerLobby script           
-    ///</summary>
 
     #region Variables
     [SerializeField] private int minPlayers = 2;
-    [SerializeField] private string menuScene = string.Empty;
-    [SerializeField] private string gameScene = string.Empty;
+    [SerializeField] private string menuScene = string.Empty; // load lobby
+    [SerializeField] private string gameScene = string.Empty; // load game
     
     [Header("Room")]
-    [SerializeField] private NetworkRoomPlayerLobby roomPlayerPrefab = null;
+    [SerializeField] private NetworkRoomPlayerLobby roomPlayerPrefab = null; // Lobby players' GUI
     
     [Header("Game")]
-    [SerializeField] private NetworkGamePlayerLobby gamePlayerPrefab = null;
-    [SerializeField] private GameObject playerSpawnSystem = null;
+    [SerializeField] private NetworkGamePlayerLobby gamePlayerPrefab = null; // players ready to get into be loaded to the game
+    [SerializeField] private GameObject playerSpawnSystem = null; // player spawn system
 
-    private int SelectAsMonsterNumber;
-    private int numberOfPlayers;
+    private int SelectAsMonsterNumber; // selects a random player to be the monster
+    private int numberOfPlayers; // number of players in the game
     #endregion
     
     #region Actions
@@ -35,8 +35,8 @@ public class NetworkManagerLobby : NetworkManager
     public static event Action OnServerStopped;
     #endregion
     
-    public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
-    public List<NetworkGamePlayerLobby> GamePlayers { get; } = new List<NetworkGamePlayerLobby>();
+    public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>(); // lists players in the lobby with GUI
+    public List<NetworkGamePlayerLobby> GamePlayers { get; } = new List<NetworkGamePlayerLobby>(); // lists players ready to load into the game
     
      ///<summary> Spawns all the prefabs in Resources/SpawnablePrefabs folder on the server when the server starts up. 
      ///<para> Require: Resources/SpawnablePrefabs folder
@@ -223,6 +223,7 @@ public class NetworkManagerLobby : NetworkManager
 
     }
 
+    #region Getters
     public int GetSelectAsMonsterNumber()
     {
         return SelectAsMonsterNumber;
@@ -237,6 +238,7 @@ public class NetworkManagerLobby : NetworkManager
     {
         return playerSpawnSystem;
     }
+    #endregion
 }
 
 

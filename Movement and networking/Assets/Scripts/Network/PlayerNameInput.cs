@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using TMPro;
 
+/*
+    Player types their username in the main menu and its saved for them
+*/
 public class PlayerNameInput : MonoBehaviour
 {
     [Header("UI")]

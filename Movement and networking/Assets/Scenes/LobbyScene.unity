@@ -258,13 +258,13 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 7253518564761386515, guid: 5a74333736613a8438e1bafe97415675, type: 3}
+  playerPrefab: {fileID: 3180777394066083326, guid: c506707e550517441ba30eb268f81df1, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
   minPlayers: 1
   menuScene: LobbyScene
-  gameScene: Scene_Map 01
+  gameScene: Scene_Map 02
   roomPlayerPrefab: {fileID: 3365234175662670742, guid: 2c5a83fca1203ec43a7e7e95a55401f8, type: 3}
   gamePlayerPrefab: {fileID: 1767442082762840349, guid: d68f210586457664592fde1dccc4249e, type: 3}
   playerSpawnSystem: {fileID: 8382220826952067706, guid: 80f4d28ada1f1be4ea78727de2d35cf1, type: 3}

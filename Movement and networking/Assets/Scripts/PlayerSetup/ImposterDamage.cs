@@ -2,19 +2,18 @@
 using Cinemachine;
 using Mirror;
 
+// Monster can damage players and infected can become players again after killing a player
 public class ImposterDamage : NetworkBehaviour
 {
-    private const string PLAYER_TAG = "Player";
+    #region Variables
     [SerializeField] private Player playerScript;
     [SerializeField] private int playerDamage;
     [SerializeField] private int damageDistance;
     [SerializeField] private CinemachineVirtualCamera virtualCamera = null;
     [SerializeField] private LayerMask mask;
-     
-     ///<summary> Previous movement needs to be called as movements are only called once rather than once every frame.
-     ///<para>    So it needs to know when to change its movement by knowing when to reset.
-     ///</summary>
-    private Vector2 previousInput;
+    
+    private const string PLAYER_TAG = "Player";
+    
     private Controls controls;
     private Controls Controls
     {
@@ -24,22 +23,19 @@ public class ImposterDamage : NetworkBehaviour
             return controls = new Controls();
         }
     }
-    
-     ///<summary> Everytime when a movement key is pressed, it either continues its current path or resets it.
-     ///<para> Requires: SetMovement method
-     ///<para> Requires: ResetMovement method
+
+    private bool isInfected = false;
+    #endregion
+
+     ///<summary> Enables the script and subscribes DamagePlayer() method to left mouse button
+     ///<para> Requires: DamagePlayer method
+     ///<para> Requires: Controls script
      ///</summary>
     public override void OnStartAuthority()
     {
         enabled = true;
         controls.Player.Damage.performed += ctx => DamagePlayer();
     }
-
-     ///<summary> Only allows the player to jump if they are one the ground, and applies gravity once its above the ground.
-     ///<para> Requires: jumpDirection variable
-     ///<para> Requires: gravity variable
-     ///<para> Requires: controller object
-     ///</summary>
     
     [ClientCallback]
     private void OnEnable() => Controls.Enable();
@@ -47,10 +43,15 @@ public class ImposterDamage : NetworkBehaviour
     [ClientCallback]
     private void OnDisable() => Controls.Disable();
 
+     ///<summary> Creates a raycast to see how far the infector or infected is to the player. It will damage the player if they are not infected and cause them to die after they have no health left.
+     ///<para> Players can only attack those that are not infected
+     ///<para> Requires: CmdDamagePlayer method
+     ///<para> Requires: CmdBecomePlayer method
+     ///<para> Requires: Player Script
+     ///</summary>
     [Client]
     private void DamagePlayer()
     {
-        Debug.Log("Monster is attacking");
         if(!hasAuthority)
         return;
 
@@ -59,16 +60,27 @@ public class ImposterDamage : NetworkBehaviour
         {
             if(hit.collider.tag == PLAYER_TAG && hit.collider.name != gameObject.name)
             {
-                CmdDamagePlayer(hit.collider.name);
-                if(hit.collider.gameObject.GetComponent<Player>().isPlayerDead == true)
+                isInfected = hit.collider.transform.Find("Monster Capsule Visual").gameObject.activeSelf;
+
+                if(isInfected == false)
                 {
-                    BecomePlayer();
-                    Debug.Log("player dead");
+                    CmdDamagePlayer(hit.collider.name);
+                
+                    if(hit.collider.gameObject.GetComponent<Player>().isPlayerDead == true)
+                    {
+                        Debug.Log("BecomePlayer");
+                        CmdBecomePlayer();
+                    }
                 }
             }
         }
     }
 
+     ///<summary> Finds and damages the player when called
+     ///<para> Requires: RpcTakeDamage method
+     ///<para> Requires: GameManager Script
+     ///<para> Requires: Player Script
+     ///</summary>
     [Command]
     private void CmdDamagePlayer(string playerID)
     {
@@ -77,7 +89,19 @@ public class ImposterDamage : NetworkBehaviour
         player.RpcTakeDamage(playerDamage);
     }
     
-    private void BecomePlayer()
+     ///<summary> Tells the Server to make all clients do RpcBecomePlayer
+     ///<para> Requires: RpcBecomePlayer method
+     ///</summary>
+    [Command]
+    private void CmdBecomePlayer()
+    {
+        RpcBecomePlayer();
+    }
+
+     ///<summary> When an infected kills another player, they return as a player
+     ///</summary>
+    [ClientRpc]
+    private void RpcBecomePlayer()
     {
         Debug.Log(gameObject.name);
         if(this.gameObject.tag == "Player")

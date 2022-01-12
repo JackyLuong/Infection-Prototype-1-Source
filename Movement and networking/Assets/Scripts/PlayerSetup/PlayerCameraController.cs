@@ -1,9 +1,8 @@
 using Cinemachine;
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Camera follows the player in a third person view
 public class PlayerCameraController : NetworkBehaviour
 {
     #region Variables

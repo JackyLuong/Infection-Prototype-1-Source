@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Mirror;
 
+//Player is allowed to move in all directions and jump
 public class PlayerMovement : NetworkBehaviour
 {
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float playerMaxSpeed = 30f;
-    [SerializeField] private float _jumpSpeed = 0.5f;
+    [SerializeField] private float jumpSpeed = 0.5f;
+    [SerializeField] private float characterHeight = 2f;
     [SerializeField] private Rigidbody controller = null;
+    [SerializeField] private LayerMask mask;
     
-     ///<summary> Previous movement needs to be called as movements are only called once rather than once every frame.
-     ///<para>    So it needs to know when to change its movement by knowing when to reset.
-     ///</summary>
-    private Vector2 previousInput;
+    private Vector2 previousInput;      //Previous movement needs to be called as movements are only called once rather than once every frame.
+                                        // So it needs to know when to change its movement by knowing when to reset.
     private Vector3 jumpDirection;
     private Vector3 externalDirection;
 
@@ -84,10 +85,13 @@ public class PlayerMovement : NetworkBehaviour
     private void UpdateJump()
     {
         if(playerJump == true && isGrounded)
-        jumpDirection.y = _jumpSpeed;
-
+        { 
+            jumpDirection.y = jumpSpeed;
+        }
         else
-        jumpDirection.y = 0f;
+        {
+            jumpDirection.y = 0f;
+        }
     }
      ///<summary> Reads what the player is currently pressing and moves the character base on previous input and time.
      ///</summary>
@@ -105,6 +109,7 @@ public class PlayerMovement : NetworkBehaviour
 
         if(controller.velocity.magnitude < playerMaxSpeed)
         controller.AddForce((moveDirection * movementSpeed * Time.deltaTime),ForceMode.Impulse);
+        Debug.Log("JumpHeight: " + jumpDirection.y);
     }
 
      ///<summary> Checks what the player is in contact with, if it's in contact with a moving platform, then the velocity of the platform will be added to the player's movement.
@@ -113,18 +118,22 @@ public class PlayerMovement : NetworkBehaviour
      ///</summary>
 
     [Client]
-    private void OnCollisionEnter(Collision other)
+    void OnCollisionEnter(Collision other)
     {
         if(other.transform.tag == "Floor" || other.transform.tag == "Moving Floor")
         {
-            if(transform.position.y > other.transform.localPosition.y + 0.2)
             isGrounded = true;
-        }
+        } 
+        Debug.Log("IsGrounded: " + isGrounded);
     }
     
     [Client]
-    private void OnCollisionExit(Collision other)
+    void OnCollisionExit(Collision other)
     {
-        isGrounded = false;
+        if((other.transform.tag == "Floor" || other.transform.tag == "Moving Floor") && playerJump == true)
+        {
+            isGrounded = false;
+        }
+        Debug.Log("IsGrounded: " + isGrounded);
     }
 }

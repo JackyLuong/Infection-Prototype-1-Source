@@ -3,11 +3,11 @@ using Mirror;
 using TMPro;
 using UnityEngine.UI;
 
+///<summary> Puts all the players into the lobby menu where they can ready up and start the game.
+///<para> NetworkManagerLobby script
+///</summary>
 public class NetworkRoomPlayerLobby : NetworkBehaviour
 {
-     ///<summary> Puts all the players into the lobby menu where they can ready up and start the game.
-     ///<para> NetworkManagerLobby script
-     ///</summary>
     #region Variables
     [Header("UI")]
     [SerializeField] private GameObject lobbyUI = null;
@@ -141,7 +141,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         { 
             return; 
         }
-
         startGameButton.interactable = readyToStart;
     }
 
@@ -155,7 +154,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     public void CmdReadyUp()
     {
         IsReady = !IsReady;
-
         Room.NotifyPlayersOfReadyState();
     }
 
@@ -163,7 +161,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     public void CmdStartGame()
     {
         if (Room.RoomPlayers[0].connectionToClient != connectionToClient) { return; }
-
         Room.StartGame();
     }
 }

@@ -2,11 +2,11 @@
 using TMPro;
 using UnityEngine.UI;
 
+///<summary> Allows the players to join a perticular server.
+///<para> Requires: NetworkManagerLobby script
+///</summary>
 public class JoinLobbyMenu : MonoBehaviour
 {
-     ///<summary> Allows the players to join a perticular server.
-     ///<para> Requires: NetworkManagerLobby script
-     ///</summary>
     #region Variables
     [SerializeField] private NetworkManagerLobby networkManager = null;
 

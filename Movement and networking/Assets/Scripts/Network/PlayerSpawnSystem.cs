@@ -3,13 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Spawns players in order of the spawn points
 public class PlayerSpawnSystem : NetworkBehaviour
 {
-    ///<summary> Spawns players in order of the spawn points
-    ///<para> Requires: NetworkManagerLobby script
-    ///<para> Requires: NetworkManagerLobby.OnServerReadied
-    ///<para> Requires: Player prefab
-    ///</summary>
     [SerializeField] private GameObject playerPrefab = null;
     [SerializeField] private GameObject monsterPrefab = null;
 

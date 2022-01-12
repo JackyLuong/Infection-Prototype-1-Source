@@ -9,7 +9,9 @@ public class Player : NetworkBehaviour
 
     [SerializeField] private ImposterDamage imposterDamageScript;
 
-
+    [SyncVar]
+    private int currentHealth;
+    
     [SyncVar]
     private bool isDead = false;
 
@@ -21,8 +23,6 @@ public class Player : NetworkBehaviour
 
     private bool [] wasEnabled;
 
-    [SyncVar]
-    private int currentHealth;
     #endregion
 
     ///<summary> Checks what methods are enabled. This is to see what method to disable once the player dies.
